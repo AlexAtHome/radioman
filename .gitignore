@@ -1,0 +1,11 @@
+node_modules
+yarn-error.log
+package-lock.json
+config.json
+music_old
+
+music/**
+
+.vscode
+.vs
+.idea

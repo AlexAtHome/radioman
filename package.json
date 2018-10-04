@@ -1,0 +1,16 @@
+{
+  "name": "discord-podcast",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node .",
+    "test": "true"
+  },
+  "devDependencies": {
+    "discord.js": "^11.4.2",
+    "fs": "^0.0.1-security",
+    "node-opus": "^0.3.0",
+    "path": "^0.12.7"
+  }
+}
