@@ -1,4 +1,4 @@
-const { token, volume, roomId } = require('./config.json')
+const { token, volume, roomId, showSongName } = require('./config.json')
 const Discord = require('discord.js')
 const path = require('path')
 const fs = require('fs')
@@ -31,6 +31,10 @@ const playMusic = conn => {
 
   dispatcher.on('end', () => joinChannel(roomId))
   dispatcher.on('error', () => joinChannel(roomId))
+
+  if (showSongName) {
+    client.user.setActivity(newTrack, { type: 'LISTENING' }).catch(console.error)
+  }
 }
 
 const joinChannel = ch => {
@@ -48,12 +52,11 @@ client.on('ready', () => {
   joinChannel(roomId)
 })
 client.on('error', err => {
-  client.destroy()
   console.error(err)
 })
 client.on('disconnect', () => {
-  client.destroy()
   console.log('sorry, connection problems')
+  return client.destroy()
 })
 
 client.login(token)
