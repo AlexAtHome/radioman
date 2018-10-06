@@ -4,10 +4,7 @@ const path = require('path')
 const fs = require('fs')
 const client = new Discord.Client()
 
-// eslint-disable-next-line
-Array.prototype.random = function () {
-  return this[Math.floor(Math.random() * this.length)]
-}
+const getRandomTrack = () => playlist[~~(playlist.length * Math.random())]
 
 let prevTrack
 let playlist
@@ -19,9 +16,9 @@ const getPlaylist = () =>
   })
 
 const playMusic = conn => {
-  let newTrack = playlist.random()
+  let newTrack = getRandomTrack()
   while (newTrack === prevTrack) {
-    newTrack = playlist.random()
+    newTrack = getRandomTrack()
   }
 
   let stream = path.resolve(__dirname, `./music/${newTrack}`)
