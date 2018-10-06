@@ -28,8 +28,8 @@ const playMusic = conn => {
     newTrack = getRandomTrack()
   }
 
-  let stream = path.resolve(__dirname, `./music/${newTrack}`)
-  let dispatcher = conn.playStream(stream, { volume })
+  let file = path.resolve(__dirname, `./music/${newTrack}`)
+  let dispatcher = conn.playFile(file, { volume })
   prevTrack = newTrack
   console.log(`[${new Date().toUTCString()}] ⏯ ${newTrack}`)
 
