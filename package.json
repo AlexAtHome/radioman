@@ -10,7 +10,7 @@
   "devDependencies": {
     "discord.js": "^11.4.2",
     "fs": "^0.0.1-security",
-    "node-opus": "^0.3.0",
+    "opusscript": "^0.0.6",
     "path": "^0.12.7"
   }
 }
