@@ -19,7 +19,7 @@ const getPlaylist = () =>
     const musicFiles = files.filter(f => musicFormats.includes(f.split('.').pop()))
     if (musicFiles.length <= 0) throw "Didn't get any music :c\nPut music files inside 'music' folder."
 
-    playlist = files
+    playlist = musicFiles
   })
 
 const playMusic = conn => {
