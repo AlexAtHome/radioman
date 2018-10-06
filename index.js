@@ -33,7 +33,7 @@ const playMusic = conn => {
   dispatcher.on('error', () => joinChannel(roomId))
 
   if (showSongName) {
-    client.user.setActivity(newTrack, { type: 'LISTENING' }).catch(console.error)
+    client.user.setActivity(newTrack.slice(0, newTrack.lastIndexOf('.')), { type: 'LISTENING' }).catch(console.error)
   }
 }
 
@@ -47,7 +47,7 @@ const joinChannel = ch => {
 }
 
 client.on('ready', () => {
-  console.log('Discord-Podcast by mamoru-kun is ready to play some music!')
+  console.log('Discord-Podcast is ready.')
   getPlaylist()
   joinChannel(roomId)
 })
