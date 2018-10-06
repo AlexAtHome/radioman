@@ -10,9 +10,15 @@ const getRandomTrack = () => playlist[~~(playlist.length * Math.random())]
 let prevTrack = ''
 let playlist = {}
 
+const musicFormats = ['flac', 'mp3', 'wav']
+
 const getPlaylist = () => 
   fs.readdir('./music/', (err, files) => {
     if (err) throw err
+
+    const musicFiles = files.filter(f => musicFormats.includes(f.split('.').pop()))
+    if (musicFiles.length <= 0) throw "Didn't get any music :c\nPut music files inside 'music' folder."
+
     playlist = files
   })
 
@@ -52,7 +58,7 @@ bot
     joinChannel(roomId)
   })
   .once('disconnect', () => {
-    console.log(`[Discord-Podcaster] Disconnected!`)
+    console.log('[Discord-Podcaster] Disconnected!')
     process.exit(1)
   })
   .on('error', console.error)
