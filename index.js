@@ -1,62 +1,67 @@
-const { token, volume, roomId, showSongName } = require('./config.json')
-const Discord = require('discord.js')
+const { Client } = require('discord.js')
 const path = require('path')
 const fs = require('fs')
-const client = new Discord.Client()
 
-// eslint-disable-next-line
-Array.prototype.random = function () {
-  return this[Math.floor(Math.random() * this.length)]
-}
+const bot = new Client()
+const { token, volume, roomId, showSongName } = require('./config.json')
 
-let prevTrack
-let playlist
+const getRandomTrack = () => playlist[~~(playlist.length * Math.random())]
 
-const getPlaylist = () =>
+let prevTrack = ''
+let playlist = {}
+
+const musicFormats = ['flac', 'mp3', 'wav']
+
+const getPlaylist = () => 
   fs.readdir('./music/', (err, files) => {
     if (err) throw err
-    playlist = files
+
+    const musicFiles = files.filter(f => musicFormats.includes(f.split('.').pop()))
+    if (musicFiles.length <= 0) throw "Didn't get any music :c\nPut music files inside 'music' folder."
+
+    playlist = musicFiles
   })
 
 const playMusic = conn => {
-  let newTrack = playlist.random()
+  let newTrack = getRandomTrack()
   while (newTrack === prevTrack) {
-    newTrack = playlist.random()
+    newTrack = getRandomTrack()
   }
 
-  let stream = path.resolve(__dirname, `./music/${newTrack}`)
-  let dispatcher = conn.playStream(stream, { volume })
+  let file = path.resolve(__dirname, `./music/${newTrack}`)
+  let dispatcher = conn.playFile(file, { volume })
   prevTrack = newTrack
-  console.log(`[${new Date().toUTCString()}] ⏯  ${newTrack}`)
+  console.log(`[${new Date().toUTCString()}] ⏯ ${newTrack}`)
 
   dispatcher.on('end', () => joinChannel(roomId))
   dispatcher.on('error', () => joinChannel(roomId))
 
   if (showSongName) {
-    client.user.setActivity(newTrack.slice(0, newTrack.lastIndexOf('.')), { type: 'LISTENING' }).catch(console.error)
+    bot.user.setActivity(newTrack.slice(0, newTrack.lastIndexOf('.')), { type: 'LISTENING' }).catch(console.error)
   }
 }
 
 const joinChannel = ch => {
-  let connection = client.voiceConnections.get(ch)
+  let connection = bot.voiceConnections.get(ch)
   if (connection) {
     playMusic(connection)
   } else {
-    client.channels.get(ch).join().then(playMusic)
+    bot.channels.get(ch).join().then(playMusic).catch(console.error)
   }
 }
 
-client.on('ready', () => {
-  console.log('Discord-Podcast is ready.')
-  getPlaylist()
-  joinChannel(roomId)
-})
-client.on('error', err => {
-  console.error(err)
-})
-client.on('disconnect', () => {
-  console.log('sorry, connection problems')
-  return client.destroy()
-})
+bot
+  .once('ready', () => {
+    console.log(`[Discord-Podcaster] ${bot.user.username} is ready!`)
 
-client.login(token)
+    getPlaylist()
+    joinChannel(roomId)
+  })
+  .once('disconnect', () => {
+    console.log('[Discord-Podcaster] Disconnected!')
+    process.exit(1)
+  })
+  .on('error', console.error)
+  .on('warn', console.warn)
+
+bot.login(token).catch(console.error)
