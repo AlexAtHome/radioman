@@ -19,7 +19,8 @@
   "token": "your bot's access token goes right here",
   "roomId": "rooms id goes here",
   "volume": 0.5,
-  "showSongName": true
+  "showSongName": true,
+  "allowedFormats": ["flac", "mp3", "wav"]
 }
 ```
 
@@ -34,3 +35,6 @@
 
 `showSongName`: String  
 *Enables showing the current's song filename.*
+
+`allowedFormats`: Array
+*Formats for load files from music*
