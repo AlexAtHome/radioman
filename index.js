@@ -12,6 +12,7 @@ const getRandomTrack = () => {
 
 let prevTrack = ''
 let playlist = {}
+let voiceChannel = null
 
 const getPlaylist = () => 
   fs.readdir('./music/', (err, files) => {
@@ -43,7 +44,8 @@ const initChannel = ch => {
   if (connection) {
     playMusic(connection)
   } else {
-    bot.channels.get(ch).join().then(playMusic).catch(console.error)
+    voiceChannel = bot.channels.get(ch)
+    voiceChannel.join().then(playMusic).catch(console.error)
   }
 }
 
@@ -61,3 +63,10 @@ bot
   .on('error', console.error)
   .on('warn', console.warn)
   .login(token)
+
+process.on('SIGINT', () => {
+  console.log('[Discord-Podcaster] Shut down!')
+
+  if (voiceChannel) voiceChannel.leave()
+  process.exit(1)
+})
