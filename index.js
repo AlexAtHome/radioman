@@ -13,6 +13,7 @@ const getRandomTrack = () => {
 let prevTrack = ''
 let playlist = {}
 let voiceChannel = null
+let channelId = roomId
 
 const getPlaylist = () => 
   fs.readdir('./music/', (err, files) => {
@@ -31,8 +32,8 @@ const playMusic = conn => {
   const file = path.resolve(__dirname, `./music/${track}`)
   const dispatcher = conn.playFile(file, { volume })
 
-  dispatcher.on('end', () => initChannel(roomId))
-  dispatcher.on('error', () => initChannel(roomId))
+  dispatcher.on('end', () => initChannel(channelId))
+  dispatcher.on('error', () => initChannel(channelId))
 
   if (showSongName) {
     bot.user.setActivity(track.slice(0, track.lastIndexOf('.')), { type: 'LISTENING' }).catch(console.error)
@@ -54,11 +55,21 @@ bot
     console.log(`[Discord-Podcaster] ${bot.user.username} is ready!`)
 
     getPlaylist()
-    initChannel(roomId)
+    initChannel(channelId)
   })
   .once('disconnect', () => {
     console.log('[Discord-Podcaster] Disconnected!')
     process.exit(1)
+  })
+  .on('voiceStateUpdate', (oldMember, newMember) => {
+    const oldChannel = oldMember.voiceChannel
+    const newChannel = newMember.voiceChannel
+
+    const newChannelId = newChannel.id
+    if (oldChannel && oldChannel.id === newChannelId || channelId === newChannelId) return
+
+    channelId = newChannelId
+    voiceChannel = bot.channels.get(channelId)
   })
   .on('error', console.error)
   .on('warn', console.warn)
