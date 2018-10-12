@@ -3,11 +3,11 @@ const path = require('path')
 const fs = require('fs')
 
 const bot = new Client()
-const { token, volume, roomId, showSongName, allowedFormats } = require('./config.json')
+const { token, volume, roomId, showSongName } = require('./config.json')
 
 const getRandomTrack = () => {
   const rand = ~~(playlist.length * Math.random())
-  return (rand !== prevTrack) ? prevTrack = rand : getRandomTrack()
+  return (rand !== prevTrack) ? (prevTrack = rand) : getRandomTrack()
 }
 
 let prevTrack = ''
@@ -15,12 +15,13 @@ let playlist = {}
 let voiceChannel = null
 let channelId = roomId
 
-const getPlaylist = () => 
+const musicFormats = ['flac', 'wav', 'ogg', 'mp3', 'mp4']
+const getPlaylist = () =>
   fs.readdir('./music/', (err, files) => {
     if (err) throw err
 
-    const musicFiles = files.filter(f => allowedFormats.includes(f.split('.').pop()))
-    if (musicFiles.length <= 0) throw "Didn't get any music :c\nPut music files inside 'music' folder."
+    const musicFiles = files.filter(f => musicFormats.includes(f.split('.').pop()))
+    if (musicFiles.length <= 0) throw new ReferenceError("Didn't get any music :c\nPut music files inside 'music' folder.")
 
     playlist = musicFiles
   })
@@ -35,17 +36,17 @@ const playMusic = conn => {
   dispatcher.on('end', () => initChannel(channelId))
   dispatcher.on('error', () => initChannel(channelId))
 
-  if (showSongName) {
+  if (showSongName || true) {
     bot.user.setActivity(track.slice(0, track.lastIndexOf('.')), { type: 'LISTENING' }).catch(console.error)
   }
 }
 
-const initChannel = ch => {
-  const connection = bot.voiceConnections.get(ch)
+const initChannel = async ch => {
+  const connection = await bot.voiceConnections.get(ch)
   if (connection) {
     playMusic(connection)
   } else {
-    voiceChannel = bot.channels.get(ch)
+    voiceChannel = await bot.channels.get(ch)
     voiceChannel.join().then(playMusic).catch(console.error)
   }
 }
@@ -62,14 +63,20 @@ bot
     process.exit(1)
   })
   .on('voiceStateUpdate', (oldMember, newMember) => {
+    if (!oldMember.user.bot || !newMember.user.bot) return
+
     const oldChannel = oldMember.voiceChannel
     const newChannel = newMember.voiceChannel
 
-    const newChannelId = newChannel.id
-    if (oldChannel && oldChannel.id === newChannelId || channelId === newChannelId) return
+    if (newChannel) {
+      if (newMember.id === bot.user.id) {
+        const newChannelId = newChannel.id
+        if (oldChannel && oldChannel.id === newChannelId || channelId === newChannelId) return
 
-    channelId = newChannelId
-    voiceChannel = bot.channels.get(channelId)
+        channelId = newChannelId
+        voiceChannel = bot.channels.get(channelId)
+      }
+    }
   })
   .on('error', console.error)
   .on('warn', console.warn)

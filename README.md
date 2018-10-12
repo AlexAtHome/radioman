@@ -9,7 +9,7 @@
 5. `npm install` (or `yarn` if you have Yarn)
 6. Set up your Discord bot [here](https://discordapp.com/developers)
 7. Set up `config.json`
-8. Create `music` folder and place `.mp3`-files inside
+8. Create music folder and place audiofiles inside
 9. `npm start` (or `yarn start` if you have Yarn)
 
 ## Setting up a `config.json` file
@@ -19,8 +19,7 @@
   "token": "your bot's access token goes right here",
   "roomId": "rooms id goes here",
   "volume": 0.5,
-  "showSongName": true,
-  "allowedFormats": ["flac", "mp3", "wav"]
+  "showSongName": true
 }
 ```
 
@@ -33,8 +32,5 @@
 `volume`: Number  
 *Music's volume.*
 
-`showSongName`: String  
+`showSongName`: String (optional)  
 *Enables showing the current's song filename.*
-
-`allowedFormats`: Array
-*Formats for load files from music*
