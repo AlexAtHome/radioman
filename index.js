@@ -4,14 +4,14 @@ const fs = require('fs')
 const log = require('./src/log')
 const musicFormats = require('./src/getMusicFormats')
 // const getPlaylist = require('./src/getPlaylist')
-const { token, volume, roomId, showSongName } = require('./config.json')
+const cfg = require('./config.json')
 
 const bot = new Client()
 
 let prevTrack = ''
 let playlist = []
 let voiceChannel = null
-let channelId = roomId
+let channelId = cfg.roomId
 
 const getPlaylist = () =>
   fs.readdir('./music/', (err, files) => {
@@ -33,23 +33,48 @@ const getRandomTrack = () => {
 }
 
 const playMusic = conn => {
-  let track = playlist[getRandomTrack()]
-  console.log(`[${new Date().toUTCString()}] ⏯ ${track}`)
+  let dispatcher
 
-  let file = path.resolve(__dirname, `./music/${track}`)
-  let dispatcher = conn.playFile(file, { volume })
+  if (!!cfg.stream) {
+    console.log(`[${new Date().toUTCString()}] Starting the stream...`)
+    let ytdl = require('ytdl-core')
+    let streamObject = ytdl(cfg.stream, { filter: 'audioonly' })
+
+    dispatcher = conn.playStream(streamObject, {
+      seek: 0,
+      bitrate: 'auto',
+      volume: cfg.volume
+    })
+  } else {
+    log('\'stream\' option not found in config.json. Trying to search music inside \'./music\' folder ...')
+
+    let track = playlist[getRandomTrack()]
+    console.log(`[${new Date().toUTCString()}] ► ${track}`)
+
+    let file = path.resolve(__dirname, `./music/${track}`)
+    dispatcher = conn.playFile(file, { volume: cfg.volume })
+
+    if (cfg.showSongName) {
+      bot.user
+        .setActivity(track.slice(0, track.lastIndexOf('.')), {
+          type: 'LISTENING'
+        })
+        .catch(console.error)
+    }
+  }
 
   dispatcher.on('end', () => initChannel(channelId))
   dispatcher.on('error', () => initChannel(channelId))
-
-  if (showSongName || true) {
-    bot.user.setActivity(track.slice(0, track.lastIndexOf('.')), { type: 'LISTENING' }).catch(console.error)
-  }
 }
 
 const initChannel = async ch => {
   const connection = await bot.voiceConnections.get(ch)
-  if (!playlist.length) playlist = getPlaylist()
+  if (!!cfg.stream) {
+    log(`Found a 'stream' option in config.json. Going to start the stream from URL ${cfg.stream}!`)
+  } else {
+    getPlaylist()
+  }
+
   if (connection) {
     playMusic(connection)
   } else {
@@ -61,7 +86,6 @@ const initChannel = async ch => {
 bot
   .once('ready', () => {
     log(`Logged as ${bot.user.tag}!`)
-    getPlaylist()
     initChannel(channelId)
   })
   .once('disconnect', () => {
@@ -86,7 +110,7 @@ bot
   })
   .on('error', console.error)
   .on('warn', console.warn)
-  .login(token)
+  .login(cfg.token)
 
 process.on('SIGINT', () => {
   log('Shut down!')
