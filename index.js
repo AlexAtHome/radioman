@@ -35,7 +35,7 @@ const getRandomTrack = () => {
 const playMusic = conn => {
   let dispatcher
 
-  if (!!cfg.stream) {
+  if (cfg.stream) {
     console.log(`[${new Date().toUTCString()}] Starting the stream...`)
     let ytdl = require('ytdl-core')
     let streamObject = ytdl(cfg.stream, { filter: 'audioonly' })
@@ -69,7 +69,7 @@ const playMusic = conn => {
 
 const initChannel = async ch => {
   const connection = await bot.voiceConnections.get(ch)
-  if (!!cfg.stream) {
+  if (cfg.stream) {
     log(`Found a 'stream' option in config.json. Going to start the stream from URL ${cfg.stream}!`)
   } else {
     getPlaylist()
@@ -101,7 +101,7 @@ bot
     if (newChannel) {
       if (newMember.id === bot.user.id) {
         let newChannelId = newChannel.id
-        if (oldChannel && oldChannel.id === newChannelId || channelId === newChannelId) return
+        if ((oldChannel && oldChannel.id === newChannelId) || (channelId === newChannelId)) return
 
         channelId = newChannelId
         voiceChannel = bot.channels.get(channelId)

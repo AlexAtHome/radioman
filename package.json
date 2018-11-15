@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node .",
-    "test": "true"
+    "test": "eslint *.js"
   },
   "dependencies": {
     "discord.js": "^11.4.2",
