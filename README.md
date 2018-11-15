@@ -1,4 +1,4 @@
-# Discord Podcaster
+# Broadcast Bot
 
 ## Installation
 
@@ -19,7 +19,8 @@
   "token": "your bot's access token goes right here",
   "roomId": "rooms id goes here",
   "volume": 0.5,
-  "showSongName": true
+  "showSongName": true,
+  "stream": "https://www.youtube.com/watch?v=QKYfTUTwowk"
 }
 ```
 
@@ -33,4 +34,7 @@
 *Music's volume.*
 
 `showSongName`: String (optional)  
-*Enables showing the current's song filename.*
+*Enables showing the current's song filename. Works only when bot is playing the music from file system.*
+
+`stream`: String (optional)
+*Makes bot play audiotrack from this URL. Support Youtube only. Don't specify it if you want to play your music from `./music/` folder!*
