@@ -6,7 +6,7 @@
 2. [Install FFmpeg](https://www.wikihow.com/Install-FFmpeg-on-Windows)
 3. Clone the project
 4. If you don't have Python 2.7 - [Install Python 2.7.15](https://www.python.org/downloads/release/python-2715/)
-5. `npm install` (or `yarn` if you have Yarn)
+5. `npm install --prod` (or `yarn --prod` if you have Yarn)
 6. Set up your Discord bot [here](https://discordapp.com/developers)
 7. Set up `config.json`
 8. Create music folder and place audiofiles inside
