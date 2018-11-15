@@ -1,2 +1,2 @@
 module.exports = message =>
-  console.log(`[Discord-Podcaster] ${message}`)
+  console.log(`[${new Date().toUTCString()}] [Broadcast Bot] ${message}`)
