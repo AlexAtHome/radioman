@@ -1,37 +1,43 @@
 const { Client } = require('discord.js')
 const path = require('path')
 const fs = require('fs')
-
-const bot = new Client()
+const log = require('./src/log')
+const musicFormats = require('./src/getMusicFormats')
+// const getPlaylist = require('./src/getPlaylist')
 const { token, volume, roomId, showSongName } = require('./config.json')
 
-const getRandomTrack = () => {
-  const rand = ~~(playlist.length * Math.random())
-  return (rand !== prevTrack) ? (prevTrack = rand) : getRandomTrack()
-}
+const bot = new Client()
 
 let prevTrack = ''
-let playlist = {}
+let playlist = []
 let voiceChannel = null
 let channelId = roomId
 
-const musicFormats = ['flac', 'wav', 'ogg', 'mp3', 'mp4']
 const getPlaylist = () =>
   fs.readdir('./music/', (err, files) => {
     if (err) throw err
 
-    const musicFiles = files.filter(f => musicFormats.includes(f.split('.').pop()))
-    if (musicFiles.length <= 0) throw new ReferenceError("Didn't get any music :c\nPut music files inside 'music' folder.")
+    let musicFiles = files.filter(f =>
+      musicFormats.includes(f.split('.').pop()))
+
+    if (musicFiles.length <= 0) throw new ReferenceError("Didn't get any music :c\nPut music files inside the 'music' folder.")
 
     playlist = musicFiles
+    return musicFiles
   })
 
+const getRandomTrack = () => {
+  if (!playlist.length) throw new Error('Playlist is empty!')
+  let rand = ~~(playlist.length * Math.random())
+  return (rand !== prevTrack) ? (prevTrack = rand) : getRandomTrack()
+}
+
 const playMusic = conn => {
-  const track = playlist[getRandomTrack()]
+  let track = playlist[getRandomTrack()]
   console.log(`[${new Date().toUTCString()}] ⏯ ${track}`)
 
-  const file = path.resolve(__dirname, `./music/${track}`)
-  const dispatcher = conn.playFile(file, { volume })
+  let file = path.resolve(__dirname, `./music/${track}`)
+  let dispatcher = conn.playFile(file, { volume })
 
   dispatcher.on('end', () => initChannel(channelId))
   dispatcher.on('error', () => initChannel(channelId))
@@ -43,6 +49,7 @@ const playMusic = conn => {
 
 const initChannel = async ch => {
   const connection = await bot.voiceConnections.get(ch)
+  if (!playlist.length) playlist = getPlaylist()
   if (connection) {
     playMusic(connection)
   } else {
@@ -53,24 +60,23 @@ const initChannel = async ch => {
 
 bot
   .once('ready', () => {
-    console.log(`[Discord-Podcaster] ${bot.user.username} is ready!`)
-
+    log(`Logged as ${bot.user.tag}!`)
     getPlaylist()
     initChannel(channelId)
   })
   .once('disconnect', () => {
-    console.log('[Discord-Podcaster] Disconnected!')
+    log('Disconnected!')
     process.exit(1)
   })
   .on('voiceStateUpdate', (oldMember, newMember) => {
     if (!oldMember.user.bot || !newMember.user.bot) return
 
-    const oldChannel = oldMember.voiceChannel
-    const newChannel = newMember.voiceChannel
+    let oldChannel = oldMember.voiceChannel
+    let newChannel = newMember.voiceChannel
 
     if (newChannel) {
       if (newMember.id === bot.user.id) {
-        const newChannelId = newChannel.id
+        let newChannelId = newChannel.id
         if (oldChannel && oldChannel.id === newChannelId || channelId === newChannelId) return
 
         channelId = newChannelId
@@ -83,7 +89,7 @@ bot
   .login(token)
 
 process.on('SIGINT', () => {
-  console.log('[Discord-Podcaster] Shut down!')
+  log('Shut down!')
 
   if (voiceChannel) voiceChannel.leave()
   process.exit(1)
