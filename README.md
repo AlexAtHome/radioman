@@ -1,4 +1,4 @@
-# Discord Podcaster
+# Broadcast Bot
 
 ## Installation
 
@@ -6,7 +6,7 @@
 2. [Install FFmpeg](https://www.wikihow.com/Install-FFmpeg-on-Windows)
 3. Clone the project
 4. If you don't have Python 2.7 - [Install Python 2.7.15](https://www.python.org/downloads/release/python-2715/)
-5. `npm install` (or `yarn` if you have Yarn)
+5. `npm install --prod` (or `yarn --prod` if you have Yarn)
 6. Set up your Discord bot [here](https://discordapp.com/developers)
 7. Set up `config.json`
 8. Create music folder and place audiofiles inside
@@ -19,7 +19,8 @@
   "token": "your bot's access token goes right here",
   "roomId": "rooms id goes here",
   "volume": 0.5,
-  "showSongName": true
+  "showSongName": true,
+  "stream": "https://www.youtube.com/watch?v=QKYfTUTwowk"
 }
 ```
 
@@ -33,4 +34,7 @@
 *Music's volume.*
 
 `showSongName`: String (optional)  
-*Enables showing the current's song filename.*
+*Enables showing the current's song filename. Works only when bot is playing the music from file system.*
+
+`stream`: String (optional)
+*Makes bot play audiotrack from this URL. Support Youtube only. Don't specify it if you want to play your music from `./music/` folder!*
