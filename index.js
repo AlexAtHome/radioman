@@ -3,8 +3,9 @@ const path = require('path')
 const fs = require('fs')
 const log = require('./src/log')
 const musicFormats = require('./src/getMusicFormats')
-// const getPlaylist = require('./src/getPlaylist')
-const cfg = require('./config.json')
+const cfg = fs.existsSync('./config.json')
+  ? require('./config.json')
+  : require('./args')
 
 const bot = new Client()
 
