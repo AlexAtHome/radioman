@@ -5,7 +5,7 @@ const log = require('./src/log')
 const musicFormats = require('./src/getMusicFormats')
 const cfg = fs.existsSync('./config.json')
   ? require('./config.json')
-  : require('./args')
+  : require('./src/args')
 
 const bot = new Client()
 
