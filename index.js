@@ -44,7 +44,7 @@ const playMusic = conn => {
     dispatcher = conn.playStream(streamObject, {
       seek: 0,
       bitrate: 'auto',
-      volume: cfg.volume
+      volume: cfg.volume || 1
     })
   } else {
     log('\'stream\' option not found in config.json. Trying to search music inside \'./music\' folder ...')

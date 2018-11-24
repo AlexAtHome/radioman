@@ -30,8 +30,8 @@
 `roomId`: Number  
 *Id of the channel the bot will try to enter into.*
 
-`volume`: Number  
-*Music's volume.*
+`volume`: Number (optional)
+*Music's volume from `0` to `1`. Default value is `1`.*
 
 `showSongName`: String (optional)  
 *Enables showing the current's song filename. Works only when bot is playing the music from file system.*
