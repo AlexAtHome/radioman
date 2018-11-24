@@ -7,13 +7,19 @@
 3. Clone the project
 4. `npm install --prod` (or `yarn --prod` if you have Yarn)
 5. Set up your Discord bot [here](https://discordapp.com/developers)
-6. Set up `config.json` (you can also use [arguments](#starting-the-bot-with-arguments) instead or set up environmental variables on your hosting like *Config Vars in Heroku*)
+6. Set up `config.json` (you can also use [arguments](#starting-the-bot-with-arguments) instead or set up environment variables on your hosting like *Config Vars in Heroku*)
 7. If you are using a stream, then step 8 can be skipped
 8. Create folder `"music"` and place audiofiles inside
 9. `npm start` (or `yarn start` if you have Yarn)
 
 ## Starting the bot with arguments
-You have to use at least two args - `--token` and `--roomId` and `--volume`.
+
+Options picking priority:
+1. Arguments
+2. `./config.json`
+3. Environment variables
+
+If you use the bot witout `config.json` you have to use at least two args - `--token` and `--roomId` and `--volume`.
 
 ```sh
 npm start -- --token your_token_here --roomId 441341872296951822
@@ -25,9 +31,11 @@ If you want to play a YouTube stream you should specify the `--steam` argument:
 npm start -- --token your_token_here --roomId 441341872296951822 --stream https://www.youtube.com/watch?v=QKYfTUTwowk
 ```
 
+If you already have the `config.json`, all the arguments become optional. But if you specify arguments, they replace options in config file.
+
 [Here's the full list of possible arguments](#options-and-arguments)
 
-## Setting up `config.json` file (or `Environmental variables` on hosting)
+## Setting up `config.json`
 
 ```json
 {

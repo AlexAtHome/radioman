@@ -1,11 +1,9 @@
 const { Client } = require('discord.js')
 const path = require('path')
-const fs = require('fs')
 const log = require('./src/log')
+const fs = require('fs')
 const musicFormats = require('./src/getMusicFormats')
-const cfg = fs.existsSync('./config.json')
-  ? require('./config.json')
-  : require('./src/args')
+const cfg = require('./src/args')
 
 const bot = new Client()
 
