@@ -40,7 +40,7 @@ If you already have the `config.json`, all the arguments become optional. But if
 ```json
 {
   "token": "your bot's access token goes right here",
-  "roomId": "rooms_id_goes_here (but without quotes!)",
+  "roomId": "rooms_id_goes_here",
   "volume": 0.5,
   "showSongName": true,
   "stream": "https://www.youtube.com/watch?v=QKYfTUTwowk"
@@ -52,7 +52,7 @@ If you already have the `config.json`, all the arguments become optional. But if
 `--token`: String  
 *Your bot's token.*
 
-`--roomId`: Number  
+`--roomId`: String  
 *Id of the channel the bot will try to enter into.*
 
 `--volume`: Number (optional)
