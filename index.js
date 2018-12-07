@@ -1,11 +1,9 @@
 const { Client } = require('discord.js')
 const path = require('path')
-const fs = require('fs')
 const log = require('./src/log')
+const fs = require('fs')
 const musicFormats = require('./src/getMusicFormats')
-const cfg = fs.existsSync('./config.json')
-  ? require('./config.json')
-  : require('./args')
+const cfg = require('./src/args')
 
 const bot = new Client()
 
@@ -44,7 +42,7 @@ const playMusic = conn => {
     dispatcher = conn.playStream(streamObject, {
       seek: 0,
       bitrate: 'auto',
-      volume: cfg.volume
+      volume: cfg.volume || 1
     })
   } else {
     log('\'stream\' option not found in config.json. Trying to search music inside \'./music\' folder ...')
