@@ -1,9 +1,9 @@
 const { Client } = require('discord.js')
 const path = require('path')
-const log = require('./src/log')
+const log = require('./components/log')
 const fs = require('fs')
-const musicFormats = require('./src/getMusicFormats')
-const cfg = require('./src/args')
+const musicFormats = require('./components/getMusicFormats')
+const cfg = require('./components/args')
 
 const bot = new Client()
 
@@ -37,11 +37,14 @@ const playMusic = conn => {
   if (cfg.stream) {
     console.log(`[${new Date().toUTCString()}] Starting the stream...`)
     let ytdl = require('ytdl-core')
-    let streamObject = ytdl(cfg.stream, { filter: 'audioonly' })
+    let streamObject = ytdl(cfg.stream, {
+      filter: 'audioonly',
+      bitrate: 'lowest',
+      liveBuffer: 50000
+    })
 
     dispatcher = conn.playStream(streamObject, {
       seek: 0,
-      bitrate: 'auto',
       volume: cfg.volume || 1
     })
   } else {
