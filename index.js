@@ -1,7 +1,7 @@
 const { Client } = require('discord.js')
+const fs = require('fs')
 const path = require('path')
 const log = require('./components/log')
-const fs = require('fs')
 const musicFormats = require('./components/getMusicFormats')
 const cfg = require('./components/args')
 

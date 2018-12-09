@@ -1,6 +1,6 @@
 const fs = require('fs')
 const argument = require('yargs').argv
-const config = fs.existsSync('../config.json')
+const config = fs.existsSync('./config.json')
   ? require('../config.json')
   : {}
 
