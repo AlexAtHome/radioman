@@ -4,7 +4,10 @@ package-lock.json
 config.json
 
 music/**
+dist
+build
 
-.vscode
+.vscode/*
+!.vscode/extensions.json
 .vs
 .idea
