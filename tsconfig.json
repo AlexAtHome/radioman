@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     /* Basic Options */
-    "target": "ES2017",
+    "target": "ES2018",
     "module": "commonjs",
     // "lib": [],
     // "allowJs": true,
@@ -12,12 +12,12 @@
     // "sourceMap": true,
     // "outFile": "./",
     "outDir": "./dist",
-    "rootDir": "./",
+    "rootDir": "./src",
     "composite": true,
     "removeComments": true,
     "noEmitOnError": true,
     "moduleResolution": "node",
-    "lib": ["es2016", "es2017", "es2016.array.include"],
+    "lib": ["es2016", "es2017", "es2018"],
     // "noEmit": true,
     // "importHelpers": true,
     // "downlevelIteration": true,
@@ -41,7 +41,6 @@
     // "noFallthroughCasesInSwitch": true,
 
     /* Module Resolution Options */
-    // "moduleResolution": "node",
     // "baseUrl": "./",
     // "paths": {},
     // "rootDirs": [],
