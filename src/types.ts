@@ -1,13 +1,43 @@
 import { UrlWithParsedQuery, parse as parseUrl } from 'url'
 import { validateURL, getBasicInfo } from 'ytdl-core'
-import { Client } from 'discord.js';
-import { setActivity } from './shared/activity';
+import { Client } from 'discord.js'
+import { setActivity } from './shared/activity'
+import { getPlaylist } from './getPlaylist'
 
+// Must be imported this way
 const ytlist = require('youtube-playlist')
 
 export type Song = string
 
 export type Playlist = Song[]
+
+export class PlaylistObject {
+  public list: Playlist
+  private _previousTrack: Song
+
+  constructor() {
+    this.list = getPlaylist()
+    this._previousTrack = ''
+  }
+
+  set previousTrack (song: Song) {
+    this._previousTrack = song
+  }
+
+  get previousTrack (): Song {
+    return this._previousTrack
+  }
+
+  getRandomTrack (): Song {
+    const rand: number = ~~(this.list.length * Math.random())
+    const nextTrack: Song = this.list[rand]
+    if (nextTrack !== this.previousTrack) {
+      return nextTrack
+    } else {
+      return this.getRandomTrack()
+    }
+  }
+}
 
 export class YouTubeVideo {
   public url: string
