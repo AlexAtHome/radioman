@@ -2,7 +2,8 @@ import { UrlWithParsedQuery, parse as parseUrl } from 'url'
 import { validateURL, getBasicInfo } from 'ytdl-core'
 import { Client } from 'discord.js'
 import { setActivity } from './shared/activity'
-import { getPlaylist } from './getPlaylist'
+import fs from 'fs'
+const musicFormats = require('./musicFormats.json')
 
 // Must be imported this way
 const ytlist = require('youtube-playlist')
@@ -12,11 +13,11 @@ export type Song = string
 export type Playlist = Song[]
 
 export class PlaylistObject {
-  public list: Playlist
+  public list: Playlist = []
   private _previousTrack: Song
 
   constructor() {
-    this.list = getPlaylist()
+    this.getPlaylist()
     this._previousTrack = ''
   }
 
@@ -36,6 +37,18 @@ export class PlaylistObject {
     } else {
       return this.getRandomTrack()
     }
+  }
+
+  getPlaylist () {
+    fs.readdir('./music/', (err: any, files: string[]) => {
+      if (err) throw err
+      files.forEach((file: string) => {
+        let format: string = file.split('.').pop() || ''
+        if (!musicFormats.includes(format)) return void
+        this.list.push(file)
+      })
+    })
+    if (this.list.length <= 0) throw new ReferenceError("Didn't get any music :c\nPut music files inside the 'music' folder or specify the YouTube video link!")
   }
 }
 

@@ -36,5 +36,5 @@ export const playAudioFiles = (bot: Client, playlist: PlaylistObject, conn: Voic
 
   let trackTitleToShow = track.slice(0, track.lastIndexOf('.'))
   setActivity(bot, trackTitleToShow)
-  return getFileDispatcher(conn, track)
+  return getFileDispatcher(conn, file)
 }
