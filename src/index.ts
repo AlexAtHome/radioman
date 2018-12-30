@@ -1,73 +1,26 @@
 import { Client, VoiceConnection, StreamDispatcher, Snowflake, VoiceChannel, Channel } from 'discord.js'
-import * as path from 'path'
 import log from './shared/log'
-import ytdl from 'ytdl-core'
 
 import * as cfg from './shared/args'
-import { getPlaylist } from './getPlaylist'
-import { getRandomTrack } from './getRandomTrack'
-import { Song, Playlist, YouTubeVideo, YouTubePlaylist } from './types';
+import { YouTubeVideo, YouTubePlaylist, PlaylistObject } from './types'
 import die from './shared/die'
-import { setActivity } from './shared/activity'
-import { getDispatcher } from './shared/getDispatcher'
+import { playYouTubePlaylist, playYouTubeVideo, playAudioFiles } from './playMusic'
 
 const bot = new Client()
-let playlist: Playlist
+let playlist: PlaylistObject
 let YTplaylist: YouTubePlaylist
+let videoToPlay: YouTubeVideo
 let channelId: Snowflake = cfg.roomId
 
 let voiceChannel: VoiceChannel | Channel | undefined
-let prevTrack: Song = ''
 
-const playMusic = async (conn: VoiceConnection) => {
-  let dispatcher: StreamDispatcher | undefined
-
-  if (cfg.streamPlaylist) {
-    try {
-      YTplaylist = await new YouTubePlaylist(cfg.streamPlaylist)
-      await YTplaylist.fetchTracks()
-      let currentTrack = YTplaylist.getRandomTrack()
-
-      let streamObject = ytdl(currentTrack.url, {
-        filter: 'audioonly'
-      })
-
-      console.log(`[${new Date().toUTCString()}] ► ${currentTrack.name}`)
-      dispatcher = getDispatcher(conn, streamObject)
-      await setActivity(bot, currentTrack.name)
-    } catch (error) {
-      die(voiceChannel, error)
-    }
-
-  } else if (cfg.stream) {
-    let video = new YouTubeVideo(cfg.stream)
-
-    let streamObject = ytdl(video.url, {
-      filter: 'audioonly'
-    })
-
-    console.log(`[${new Date().toUTCString()}] Starting the stream...`)
-    dispatcher = getDispatcher(conn, streamObject)
-    try {
-      await video.setActivity(bot)
-    } catch (error) {
-      console.error(error)
-    }
-
-  } else {
-    log('\'stream\' option not found in config.json. Trying to search music inside \'./music\' folder ...')
-    let track: Song = getRandomTrack(playlist, prevTrack)
-    prevTrack = track
-
-    console.log(`[${new Date().toUTCString()}] ► ${track}`)
-    let file = path.resolve(__dirname, `./music/${track}`)
-    dispatcher = conn.playFile(file, {
-      volume: cfg.volume
-    })
-
-    let trackTitleToShow = track.slice(0, track.lastIndexOf('.'))
-    await setActivity(bot, trackTitleToShow)
-  }
+const playMusic = (conn: VoiceConnection) => {
+  let dispatcher: StreamDispatcher | undefined =
+    cfg.streamPlaylist
+      ? playYouTubePlaylist(bot, YTplaylist, conn)
+      : cfg.stream
+        ? playYouTubeVideo(bot, videoToPlay, conn)
+        : playAudioFiles(bot, playlist, conn)
 
   if (dispatcher instanceof StreamDispatcher) {
     dispatcher.on('end', () => initChannel(channelId))
@@ -76,7 +29,7 @@ const playMusic = async (conn: VoiceConnection) => {
 }
 
 const initChannel = async (ch: Snowflake) => {
-  const connection: VoiceConnection | undefined = await bot.voiceConnections.get(ch)
+  const connection: VoiceConnection | undefined = bot.voiceConnections.get(ch)
 
   if (!connection) {
     throw new Error(`Failed to find the channel with id ${ch}! It possibly doesn't exist!`)
@@ -84,10 +37,13 @@ const initChannel = async (ch: Snowflake) => {
 
   if (cfg.streamPlaylist) {
     log(`Found a 'playlist' option. Going to start the music from it!`)
+    YTplaylist = new YouTubePlaylist(cfg.streamPlaylist)
+    await YTplaylist.fetchTracks()
   } else if (cfg.stream) {
     log(`Found a 'stream' option. Going to start the stream from it!`)
+    videoToPlay = new YouTubeVideo(cfg.stream)
   } else {
-    playlist = getPlaylist()
+    playlist = new PlaylistObject()
   }
 
   if (connection) {
