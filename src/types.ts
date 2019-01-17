@@ -112,7 +112,7 @@ export class YouTubePlaylist {
 
   validate(link: string): boolean {
     let urlInfo: UrlWithParsedQuery = parseUrl(link, true)
-    if (urlInfo.hostname === 'youtube.com' && urlInfo.pathname === '/playlist' && ('list' in urlInfo.query)) {
+    if ((urlInfo.hostname === 'youtube.com' || urlInfo.hostname === 'www.youtube.com') && urlInfo.pathname === '/playlist' && ('list' in urlInfo.query)) {
       return true
     } else {
       throw new ReferenceError("Wrong YouTube playlist link!")
