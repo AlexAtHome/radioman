@@ -1,4 +1,4 @@
-import { Client, VoiceConnection, StreamDispatcher, Snowflake, VoiceChannel, Channel } from 'discord.js'
+import { Client, VoiceConnection, StreamDispatcher, Snowflake, VoiceChannel, Channel, GuildMember } from 'discord.js'
 import log from './shared/log'
 
 import * as cfg from './shared/args'
@@ -22,7 +22,7 @@ const playMusic = (conn: VoiceConnection) => {
         ? playYouTubeVideo(bot, videoToPlay, conn)
         : playAudioFiles(bot, playlist, conn)
 
-  if (dispatcher instanceof StreamDispatcher) {
+  if (dispatcher) {
     dispatcher.on('end', () => initChannel(channelId))
     dispatcher.on('error', () => initChannel(channelId))
   }
@@ -31,7 +31,7 @@ const playMusic = (conn: VoiceConnection) => {
 const initChannel = async (ch: Snowflake) => {
   const connection: VoiceConnection | undefined = bot.voiceConnections.get(ch)
 
-  if (!connection) {
+  if (!bot.channels.has(ch)) {
     throw new Error(`Failed to find the channel with id ${ch}! It possibly doesn't exist!`)
   }
 
@@ -50,7 +50,7 @@ const initChannel = async (ch: Snowflake) => {
     playMusic(connection)
   } else {
     try {
-      voiceChannel = await bot.channels.get(ch)
+      voiceChannel = bot.channels.get(ch)
       if (voiceChannel instanceof VoiceChannel) {
         let conn = await voiceChannel.join()
         log('Connected to the room!')
@@ -71,7 +71,7 @@ bot
     log('Disconnected!')
     process.exit(1)
   })
-  .on('voiceStateUpdate', (oldMember, newMember) => {
+  .on('voiceStateUpdate', (oldMember: GuildMember, newMember: GuildMember) => {
     if (!oldMember.user.bot || !newMember.user.bot) return
 
     let oldChannel: VoiceChannel = oldMember.voiceChannel
@@ -89,7 +89,8 @@ bot
   })
   .on('error', console.error)
   .on('warn', console.warn)
-  .login(cfg.token)
+
+bot.login(cfg.token)
 
 process.on('SIGINT', () => {
   log('Shut down!')
