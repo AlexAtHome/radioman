@@ -1,6 +1,7 @@
-<img src=".github/logo.svg" style="display:block;max-width:200px;margin:auto;">
-<h1 style="text-align:center">Radioman</h1>
-<p style="text-align:center">Discord bot for music broadcasting.</p>
+<img src=".github/logo.svg" style="display:inline-block;" width="200" height="200">
+
+# Radioman
+*Discord bot for music broadcasting.*
 
 ## Installation
 
