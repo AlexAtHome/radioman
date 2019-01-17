@@ -1,8 +1,10 @@
 import { existsSync } from 'fs'
 import { argv } from 'yargs'
 
-const config = existsSync('./config.json')
-  ? require('./config.json')
+let configExists = existsSync('./config.json')
+
+const config = configExists
+  ? require('../../config.json')
   : {}
 
 export const token = argv.token || config.token || process.env.token
