@@ -3,7 +3,7 @@ import { validateURL, getBasicInfo } from 'ytdl-core'
 import { Client } from 'discord.js'
 import { setActivity } from './shared/activity'
 import fs from 'fs'
-const musicFormats = require('./musicFormats.json')
+import musicFormats from './musicFormats'
 
 // Must be imported this way
 const ytlist = require('youtube-playlist')

@@ -1,4 +1,4 @@
-[
+export default [
   "3dostr",
   "3g2",
   "3gp",
