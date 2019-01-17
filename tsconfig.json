@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     /* Basic Options */
-    "target": "ES2018",
+    "target": "es2018",
     "module": "commonjs",
     // "lib": [],
     // "allowJs": true,
@@ -27,7 +27,7 @@
     "strict": true,
     "sourceMap": true,
     // "noImplicitAny": true,
-    // "strictNullChecks": true,
+    "strictNullChecks": true,
     // "strictFunctionTypes": true,
     // "strictBindCallApply": true,
     // "strictPropertyInitialization": true,
