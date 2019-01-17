@@ -1,5 +1,6 @@
 {
-  "name": "broadcast-bot",
+  "name": "radioman",
+  "description": "Discord bot for music broadcasting.",
   "version": "2.0.0",
   "main": "dist/index.js",
   "license": "MIT",
