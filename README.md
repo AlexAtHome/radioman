@@ -22,6 +22,7 @@
 1. Sign up in [Heroku](https://www.heroku.com/) and download Heroku CLI. Also download [Git](https://git-scm.com).
 2. Clone the project
 3. `heroku create project_name_goes_here`
+4. Add the FFMPEG buildpack by running: `heroku buildpacks:add https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git`
 4. `git push heroku master`
 5. Open Heroku Dashboard, find your new app's page, open up the Settings section and add config vars `token` and `roomId`. (Also add optional settings)
 
