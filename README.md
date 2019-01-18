@@ -53,7 +53,7 @@ If you already have the `config.json`, all the arguments become optional. But if
 ```json
 {
   "token": "your bot's access token goes right here",
-  "roomId": "rooms_id_goes_here (but without quotes!)",
+  "roomId": "rooms_id_goes_here",
   "volume": 0.5,
   "showSongName": true,
   "stream": "https://www.youtube.com/watch?v=QKYfTUTwowk",
@@ -63,22 +63,22 @@ If you already have the `config.json`, all the arguments become optional. But if
 
 ## Options and arguments
 
-`--token`: String
+`--token`: String  
 *Your bot's token.*
 
-`--roomId`: String
+`--roomId`: String  
 *Id of the channel the bot will try to enter into.*
 
-`--volume`: Number (optional)
+`--volume`: Number (optional)  
 *Music's volume from `0` to `1`. Default value is `1`.*
 
-`--showSongName`: String (optional)
+`--showSongName`: String (optional)  
 *Enables showing the current's song filename. Works only when bot is playing the music from file system.*
 
-`--stream`: String (optional)
+`--stream`: String (optional)  
 *Makes bot play audiotrack from this URL. Support Youtube only. Don't specify it if you want to play your music from `./music/` folder!*
 
-`--playlist`: String (optional)
+`--playlist`: String (optional)  
 *Makes bot play audiotrack from this URL. Support Youtube only. If not specified, the app will play music from the `stream` option.*
 
 # LICENSE
