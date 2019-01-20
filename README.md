@@ -39,7 +39,7 @@ If you use the bot witout `config.json` you have to use at least two args - `--t
 npm start -- --token your_token_here --roomId 441341872296951822
 ```
 
-If you want to play a YouTube stream you should specify the `--steam` argument:
+If you want to play a YouTube stream you should specify the `--stream` argument:
 
 ```sh
 npm start -- --token your_token_here --roomId 441341872296951822 --stream https://www.youtube.com/watch?v=QKYfTUTwowk
